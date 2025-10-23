@@ -1,20 +1,20 @@
-class assignment():
-    def __init__(s,name,n):
+class assignment():    #base class for inherit
+    def __init__(s,name,n):    #initialise the values
         s.name=name
         s.n=n
         s.submit()
-    def submit(s):
+    def submit(s):    #overriding method
          pass
-    def mark(s):
+    def mark(s):    #overriding method
         pass
-class dbmsAssignment(assignment):
+class dbmsAssignment(assignment):    #child class of base class
     def submit(s):
         s.Ano=[]
         for i in range(s.n):
             s.Ano.append(i)
-        print(f"{s.name} is submited {type(s).__name__[:4]}  assignment {s.n}")
+        print(f"{s.name} is submited {type(s).__name__[:4]}  assignment {s.n}")      #it return student is submitted the assignment
         s.mark()
-    def mark(s):
+    def mark(s):    #set mark to depend submitted assignment
         if len(s.Ano)==1:
             print("mark:12")
         elif len(s.Ano)==2:
@@ -25,14 +25,14 @@ class dbmsAssignment(assignment):
             print("mark:22")
         elif len(s.Ano)==5:
             print("mark:24")
-class osAssignment(assignment):
-    def submit(s):
+class osAssignment(assignment):    #child class of base class
+    def submit(s):    
         s.Ano=[]
         for i in range(s.n):
             s.Ano.append(i)
-        print(f"{s.name} is submited {type(s).__name__[:2]}  assignment {s.n}")
+        print(f"{s.name} is submited {type(s).__name__[:2]}  assignment {s.n}")    #it return student is submitted the assignment
         s.mark()
-    def mark(s):
+    def mark(s):     #set mark to depend submitted assignment
         if len(s.Ano)==1:
             print("mark:12")
         elif len(s.Ano)==2:
@@ -43,9 +43,9 @@ class osAssignment(assignment):
             print("mark:22")
         elif len(s.Ano)==5:
             print("mark:24")
-        else:
-             ()
-            
+
+#object for class
+
 s1=dbmsAssignment("praveenkanth",1)
 s1=osAssignment("praveenkanth",1)
 s1=dbmsAssignment("praveenkanth",2)
