@@ -1,0 +1,14 @@
+a={1,2,3,4,5}
+b={6,7,5,9,0}
+union_1= a|b
+intersection_2= a&b
+print ("set 1=",a)
+print ("set 2=",b)
+print ("union=",union_1)
+print ("intersection=",intersection_2)
+
+Output:
+set 1= {1, 2, 3, 4, 5}
+set 2= {0, 5, 6, 7, 9}
+union= {0, 1, 2, 3, 4, 5, 6, 7, 9}
+intersection= {5}
