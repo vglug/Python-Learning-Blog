@@ -7,9 +7,9 @@ def decode_qr(filename):
 
     if result:
         for qr in result:
-            print("✅ QR Code Data:", qr.data.decode('utf-8'))
+            print("QR Code Data:", qr.data.decode('utf-8'))
     else:
-        print("❌ No QR code found in the image.")
+        print("No QR code found in the image.")
 
 # Example usage
 if __name__ == "__main__":
