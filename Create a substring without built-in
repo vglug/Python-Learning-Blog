@@ -1,0 +1,69 @@
+def find_and_replace_substring(main_string, old_substring, new_substring):
+    """
+    Finds and replaces all non-overlapping occurrences of old_substring 
+    with new_substring in main_string using only basic looping and comparison.
+    """
+    
+    
+    main_len = len(main_string)
+    old_len = len(old_substring)
+    
+    
+    if old_len == 0:
+        
+        return new_substring.join(list(main_string))
+    
+    result = ""
+    i = 0  
+
+    while i < main_len:
+  
+        
+        
+        if i + old_len <= main_len:
+            
+            
+            is_match = True
+            for j in range(old_len):
+                if main_string[i + j] != old_substring[j]:
+                    is_match = False
+                    break
+            
+            
+            if is_match:
+                
+                result += new_substring
+                i += old_len  # Skip over the entire matched 'old_substring'
+            else:
+               
+                result += main_string[i]
+                i += 1
+        
+        else:
+       
+            result += main_string[i:]
+            break
+            
+    return result
+
+# ----------------- Example Usage -----------------
+
+original_text = "The quick brown fox jumps over the lazy fox."
+search_term = "fox"
+replacement_term = "dog"
+
+replaced_text = find_and_replace_substring(original_text, search_term, replacement_term)
+
+print(f"Original Text:  '{original_text}'")
+print(f"Search Term:    '{search_term}'")
+print(f"Replacement:    '{replacement_term}'")
+print(f"Result:         '{replaced_text}'")
+
+print("\n--- Another Example (Different Lengths) ---")
+text2 = "Apples are great. Apples are healthy."
+search2 = "Apples"
+replace2 = "Watermelons"
+
+result2 = find_and_replace_substring(text2, search2, replace2)
+print(f"Original Text:  '{text2}'")
+print(f"Result:         '{result2}'")
