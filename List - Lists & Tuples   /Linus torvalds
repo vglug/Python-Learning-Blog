@@ -1,0 +1,62 @@
+List slicing and basic manipulations: Implement a Python program to list slicing and basic manipulations.
+
+# Create a sample list
+my_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+print(f"Original list: {my_list}")
+
+# --- List Slicing ---
+
+# 1. Basic slice (start:end) - elements from start index up to (but not including) end index
+slice1 = my_list[2:6]
+print(f"Slice from index 2 to 5 (my_list[2:6]): {slice1}")
+
+# 2. Slice from start to end (start:)
+slice2 = my_list[5:]
+print(f"Slice from index 5 to end (my_list[5:]): {slice2}")
+
+# 3. Slice from beginning to end ([:end])
+slice3 = my_list[:4]
+print(f"Slice from beginning to index 3 (my_list[:4]): {slice3}")
+
+# 4. Slice with a step (start:end:step)
+slice4 = my_list[1:9:2]
+print(f"Slice from index 1 to 8 with step 2 (my_list[1:9:2]): {slice4}")
+
+# 5. Reverse the list using slicing
+reversed_list = my_list[::-1]
+print(f"Reversed list (my_list[::-1]): {reversed_list}")
+
+# 6. Create a shallow copy of the list
+list_copy = my_list[:]
+print(f"Shallow copy of the list (my_list[:]): {list_copy}")
+
+# --- Basic List Manipulations ---
+
+# 1. Modifying elements using slicing
+my_list[2:5] = [35, 45, 55]
+print(f"List after modifying elements at indices 2-4 (my_list[2:5] = [35, 45, 55]): {my_list}")
+
+# 2. Inserting elements using slicing (by assigning to an empty slice)
+my_list[5:5] = [58, 62]
+print(f"List after inserting elements at index 5 (my_list[5:5] = [58, 62]): {my_list}")
+
+# 3. Deleting elements using slicing (by assigning an empty list)
+my_list[7:9] = []
+print(f"List after deleting elements at indices 7-8 (my_list[7:9] = []): {my_list}")
+
+# 4. Appending an element
+my_list.append(110)
+print(f"List after appending 110: {my_list}")
+
+# 5. Removing an element by value
+my_list.remove(20)
+print(f"List after removing 20: {my_list}")
+
+# 6. Popping an element by index
+popped_element = my_list.pop(0)
+print(f"List after popping element at index 0: {my_list}")
+print(f"Popped element: {popped_element}")
+
+# 7. Inserting an element at a specific index
+my_list.insert(2, 42)
+print(f"List after inserting 42 at index 2: {my_list}")
