@@ -1,1 +1,10 @@
-lamda usage. py
+data = [('apple', 3), ('banana', 1), ('cherry', 2)]
+
+# Sort by the second element of each tuple
+sorted_data = sorted(data, key=lambda item: item[1])
+print(f"Sorted data: {sorted_data}")
+
+# Sort a list of dictionaries by a specific key
+users = [{'name': 'Alice', 'age': 30}, {'name': 'Bob', 'age': 25}]
+sorted_users = sorted(users, key=lambda user: user['age'])
+print(f"Sorted users: {sorted_users}")
