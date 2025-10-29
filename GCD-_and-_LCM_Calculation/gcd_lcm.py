@@ -5,7 +5,7 @@ def gcd(a, b):
     return a
 
 def lcm(a, b):
-    """Compute the Least Common Multiple (LCM) of two numbers."""
+    """"Compute the Least Common Multiple (LCM) of two numbers.""""
     return abs(a * b) // gcd(a, b)
 
 # Main program
