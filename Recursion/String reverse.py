@@ -3,6 +3,6 @@ def reverse_string(s):
         return s
     else:
         return reverse_string(s[1:]) + s[0]
-text = input("Enter a string: ")
+text = input("Enter your string: ")
 result = reverse_string(text)
 print("Reversed string:", result)
