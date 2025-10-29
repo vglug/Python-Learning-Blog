@@ -1,0 +1,43 @@
+import torch
+import torchaudio
+from faster_whisper import WhisperModel
+
+# --- VAD and Whisper setup ---
+# Load Silero VAD model.
+model, utils = torch.hub.load(repo_or_dir='snakers4/silero-vad',
+                              model='silero_vad',
+                              force_reload=False,
+                              onnx=True)
+get_speech_timestamps, save_audio, read_audio, VADIterator, collect_chunks = utils
+
+# Load Faster-Whisper model.
+whisper_model = WhisperModel("base", device="cpu", compute_type="int8")
+
+# --- Function to process audio with VAD ---
+def process_with_vad(audio_path):
+    """
+    Transcribes an audio file using VAD to identify speech segments,
+    then passes them to Faster-Whisper.
+    """
+    wav = read_audio(audio_path, sampling_rate=16000)
+    speech_timestamps = get_speech_timestamps(wav, model, sampling_rate=16000)
+
+    full_transcript = []
+    for chunk in collect_chunks(speech_timestamps, wav):
+        # Temporarily save the audio chunk for Faster-Whisper.
+        temp_audio_file = f"temp_chunk_{chunk['start']}.wav"
+        torchaudio.save(temp_audio_file, chunk['audio_chunk'].unsqueeze(0), 16000)
+        
+        # Transcribe the chunk.
+        segments, info = whisper_model.transcribe(temp_audio_file)
+        
+        for segment in segments:
+            full_transcript.append(segment.text)
+        
+        os.remove(temp_audio_file) # Clean up temp file.
+    
+    print(" ".join(full_transcript))
+
+# Example usage
+# You would need to handle dependencies and a full project structure for this.
+# process_with_vad("long_audio_with_silence.wav")
