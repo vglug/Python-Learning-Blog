@@ -76,4 +76,4 @@ if _name_ == "_main_":
         decode_qr_camera()
 
     else:
-        print("Exiting...")
+        print("Exiting....")
