@@ -8,4 +8,4 @@ intersection_set = A & B
 print("Set A:", A)
 print("Set B:", B)
 print("Union:", union_set)
-print("Intersection:", intersection_set)
+print("Intersection: ", intersection_set)
