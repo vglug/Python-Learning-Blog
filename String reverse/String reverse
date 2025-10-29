@@ -7,6 +7,6 @@ def reverse_string(s):
     else:
         return reverse_string(s[1:]) + s[0]
 # Ask the user to enter a string
-text = input("Enter a string: ")
+text = input("Enter your string: ")
 # Print the reversed string by calling the function reverse_string()
 print("Reversed string:", reverse_string(text))
