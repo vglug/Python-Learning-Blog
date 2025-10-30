@@ -1,0 +1,40 @@
+from fastapi import FastAPI, Header, HTTPException
+from typing import Optional
+import os, requests, uvicorn
+
+app = FastAPI(title="Drive/Dropbox Read-Only Integration")
+
+GDRIVE_URL = "https://www.googleapis.com/drive/v3/files"
+DROPBOX_LIST = "https://api.dropboxapi.com/2/files/list_folder"
+
+def _get_token(header_token: Optional[str], env_var: str):
+    if header_token:
+        return header_token
+    tok = os.getenv(env_var)
+    if not tok:
+        raise HTTPException(status_code=401, detail=f"{env_var} not provided")
+    return tok
+
+@app.get("/gdrive/files")
+def list_gdrive_files(x_gdrive_token: Optional[str] = Header(None), page_size: int = 10):
+    token = _get_token(x_gdrive_token, "GDRIVE_ACCESS_TOKEN")
+    params = {"pageSize": page_size, "fields": "files(id,name)"}
+    headers = {"Authorization": f"Bearer {token}"}
+    r = requests.get(GDRIVE_URL, params=params, headers=headers, timeout=10)
+    if not r.ok:
+        raise HTTPException(status_code=r.status_code, detail=r.text)
+    return r.json()
+
+@app.post("/dropbox/files")
+def list_dropbox_files(x_dropbox_token: Optional[str] = Header(None), path: str = ""):
+    token = _get_token(x_dropbox_token, "DROPBOX_ACCESS_TOKEN")
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+    data = {"path": path, "limit": 20, "recursive": False}
+    r = requests.post(DROPBOX_LIST, json=data, headers=headers, timeout=10)
+    if not r.ok:
+        raise HTTPException(status_code=r.status_code, detail=r.text)
+    entries = r.json().get("entries", [])
+    return {"entries": [{"name": e.get("name"), "id": e.get("id"), "path_lower": e.get("path_lower")} for e in entries]}
+
+if _name_ == "_main_":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False
