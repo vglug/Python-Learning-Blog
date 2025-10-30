@@ -1,4 +1,4 @@
-# Character Type Checker
+# Character Type Checker using python 
 
 ch = input("Enter any character: ")
 
