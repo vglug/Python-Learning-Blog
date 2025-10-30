@@ -1,0 +1,52 @@
+import random
+import numpy as np
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+data = {
+    'questions': [
+        "Hi", 
+        "Hello", 
+        "How are you?", 
+        "What is your name?", 
+        "Who created you?", 
+        "What can you do?", 
+        "Tell me a joke", 
+        "Bye", 
+        "Goodbye"
+    ],
+    'answers': [
+        "Hello! How can I help you today?",
+        "Hi there! How can I assist?",
+        "I'm just a program, but I'm doing great!",
+        "I'm a chatbot created using Python!",
+        "I was created by a developer using machine learning and pandas!",
+        "I can answer your questions and help you learn Python.",
+        "Why did the computer catch a cold? It left its Windows open!",
+        "Goodbye! Have a great day!",
+        "See you soon!"
+    ]
+}
+
+df = pd.DataFrame(data)
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(df['questions'])
+
+def chatbot_response(user_input):
+    user_tfidf = vectorizer.transform([user_input])
+    similarities = cosine_similarity(user_tfidf, X)
+    index = similarities.argmax()
+    score = similarities[0, index]
+    if score < 0.3:
+        return "I'm not sure I understand. Can you rephrase?"
+    return df['answers'][index]
+
+print("🤖 Chatbot: Hello! Type 'exit' to stop chatting.")
+while True:
+    user_input = input("You: ")
+    if user_input.lower() in ['exit', 'quit', 'bye']:
+        print("🤖 Chatbot: Goodbye! 👋")
+        break
+    response = chatbot_response(user_input)
+    print("🤖 Chatbot:", response)
