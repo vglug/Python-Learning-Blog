@@ -20,7 +20,7 @@ for i in range(5):
         continue  # Skip to the next iteration
 
     # Print only if the number is odd and positive
-    print("You entered an odd positive number:", num)
+    print("You Entered an odd positive number:", num)
 
 # Final message after loop ends
 print("Program finished.")
