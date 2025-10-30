@@ -1,6 +1,5 @@
 import csv
 
-
 total_marks = {}
 
 with open("students.csv", "r") as file:
