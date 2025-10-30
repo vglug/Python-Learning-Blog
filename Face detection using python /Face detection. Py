@@ -1,3 +1,4 @@
+Face detection using OpenCV in python 
 import cv2
 
 # Load the pre-trained Haar Cascade face detection model
