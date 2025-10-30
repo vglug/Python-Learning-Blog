@@ -43,6 +43,6 @@ car1.mileage = 50
 print(f"All cars have {Car.wheels} wheels.")
 
 Car.change_wheels(6)
-print(f"Now all cars have {Car.wheels} wheels.")
+print(f"Now All cars have {Car.wheels} wheels.")
 
 Car.honk()
