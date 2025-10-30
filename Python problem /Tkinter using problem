@@ -1,3 +1,4 @@
+# simple program using tkinter in python 
 import tkinter as tk
 
 # Function to check even or odd
