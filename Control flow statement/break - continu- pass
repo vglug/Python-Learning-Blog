@@ -1,3 +1,4 @@
+# jump statement break, continue and pass
 # Loop runs 5 times
 for i in range(5):
     # Take input from the user
