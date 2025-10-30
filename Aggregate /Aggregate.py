@@ -16,6 +16,6 @@ with open("students.csv", "r") as file:
         else:
             total_marks[name] = marks
 
-
+#print output
 for name, marks in total_marks.items():
     print(name, "=", marks)
