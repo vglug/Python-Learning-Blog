@@ -1,0 +1,21 @@
+import pandas as pd
+
+data = {
+    'Name': [' Alice ', 'Bob', None, 'David', 'Eve', 'Alice '],
+    'Age': [25, None, 30, 22, 28, 25],
+    'City': ['New York', 'Los Angeles', 'New York', 'Chicago', None, 'New York']
+}
+
+df = pd.DataFrame(data)
+print("Original DataFrame:\n", df)
+
+df = df.drop_duplicates()
+df['Name'] = df['Name'].fillna('Unknown')
+df['Age'] = df['Age'].fillna(df['Age'].mean())
+df['City'] = df['City'].fillna('Unknown')
+df['Name'] = df['Name'].str.strip()
+df['City'] = df['City'].str.strip()
+df['Age'] = df['Age'].astype(int)
+df.rename(columns={'Name': 'Full_Name', 'Age': 'Age_Years', 'City': 'City_Name'}, inplace=True)
+
+print("\nCleaned DataFrame:\n", df)
