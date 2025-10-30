@@ -1,19 +1,25 @@
 import logging
 import configparser
 from datetime import datetime
+# Step 1: Read configuration
 config = configparser.ConfigParser()
+# Configuration file name
 config.read('config.ini')
+# Get values from config file
 log_file = config['LOGGING']['log_file']
 log_level = config['LOGGING']['log_level']
+# Step 2: Configure logging
 logging.basicConfig(
     filename=log_file,
     level=getattr(logging, log_level.upper(), logging.INFO),
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
+# Step 3: Example program logic
 def main():
     logging.info("Program started")
 
     try:
+                # Example calculation
         a = int(input("Enter a number: "))
         b = int(input("Enter another number: "))
 
