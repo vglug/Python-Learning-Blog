@@ -1,7 +1,7 @@
 my_list = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 print("Original list:", my_list)
 
-print("\n--- List Slicing ---")
+print("\n---- List Slicing ----")
 
 print("Slice from index 2 to 5:", my_list[2:6])
 
