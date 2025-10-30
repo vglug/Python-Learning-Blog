@@ -13,4 +13,4 @@ while True:
     volume = np.linalg.norm(audio)
     
     if volume > threshold:
-        print("Clap Detected! ")
+        print("Clap Detected!")
