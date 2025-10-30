@@ -23,4 +23,4 @@ if response.status_code == 200:
 
 # If the request failed, print the error status code
 else:
-    print("Error:", response.status_code)
+    print("Error: ", response.status_code)
