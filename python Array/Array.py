@@ -6,7 +6,7 @@ print("Enter the Array Elements:")
 for i in range(0,n):
     element=int(input())
     arr.append(element)
-print("The entered Array Elements are:",arr)
+print("The Entered Array Elements are:",arr)
 for i in range(n):
     sum =sum + arr[i]
 print("The sum of Array Elements are:",sum)
