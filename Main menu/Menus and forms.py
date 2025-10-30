@@ -30,6 +30,6 @@ def main():
             print("\n👋 Exiting program. Goodbye!")
             break
         else:
-            print("\n❌ Invalid choice, please try again.")
+            print("\n❌ Invalid choice, please try again later.")
 if __name__ == "__main__":
     main()
