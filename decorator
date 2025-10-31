@@ -1,0 +1,9 @@
+def uppercase_decorator(func):
+ def wrapper():
+  display= func()
+  return display.upper()
+ return wrapper
+ 
+def name():
+   return "welcome to vglug"
+print(name())
