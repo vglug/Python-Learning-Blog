@@ -1,0 +1,8 @@
+def total_marks(marks):
+    return sum(marks)
+marks = [int(input("Enter mark: ")) for _ in range(5)]
+total = total_marks(marks)
+average = total / len(marks)
+
+print("Total:", total)
+print("Average:", round(average, 2))
