@@ -1,0 +1,38 @@
+def get_valid_input(prompt, target_type):
+ while True:
+        user_input = input(prompt)
+        try:
+            
+            if target_type == int:
+                return int(user_input)
+            elif target_type == float:
+                return float(user_input)
+            elif target_type == str:
+                return str(user_input)
+            elif target_type == bool:
+                if user_input.lower() in ['true', '1', 'yes']:
+                    return True
+                elif user_input.lower() in ['false', '0', 'no']:
+                    return False
+                else:
+                    raise ValueError("Invalid boolean value.")
+        except ValueError:
+            print(f" Invalid input! Please enter a valid {target_type.__name__} value.")
+
+print("=== Type Conversion and Validation Example ===")
+num_int = get_valid_input("Enter an integer: ", int)
+num_float = get_valid_input("Enter a floating-point number: ", float)
+text = get_valid_input("Enter a string: ", str)
+bool_val = get_valid_input("Enter a boolean value (True/False): ", bool)
+
+print("\n Conversion Results:")
+print(f"Integer Value: {num_int} (Type: {type(num_int)})")
+print(f"Float Value: {num_float} (Type: {type(num_float)})")
+print(f"String Value: '{text}' (Type: {type(text)})")
+print(f"Boolean Value: {bool_val} (Type: {type(bool_val)})")
+
+print("\n  Additional Type Conversions:")
+print(f"Integer to Float: {float(num_int)}")
+print(f"Float to Integer: {int(num_float)}")
+print(f"Integer to String: '{str(num_int)}'")
+print(f"String to Uppercase: '{text.upper()}'")
