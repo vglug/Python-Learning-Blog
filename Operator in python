@@ -1,0 +1,9 @@
+# Arithmetic operations
+a = 10
+b = 3
+print("Addition:", a + b)  # Output: 13
+print("Subtraction:", a - b)  # Output: 7
+print("Multiplication:", a * b)  # Output: 30
+
+# Comparison operations
+print("a == b:", a == b)
