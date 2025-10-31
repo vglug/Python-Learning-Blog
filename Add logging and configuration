@@ -1,0 +1,43 @@
+import logging
+import configparser
+
+# -------------------------------
+# Step 1: Read configurations
+# -------------------------------
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+log_file = config['LOGGING']['log_file']
+log_level = config['LOGGING']['log_level']
+
+# -------------------------------
+# Step 2: Set up logging
+# -------------------------------
+numeric_level = getattr(logging, log_level.upper(), None)
+logging.basicConfig(
+    filename=log_file,
+    level=numeric_level,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
+# -------------------------------
+# Step 3: Example function
+# -------------------------------
+def divide_numbers(a, b):
+    logging.info(f"Dividing {a} by {b}")
+    try:
+        result = a / b
+        logging.info(f"Result: {result}")
+        return result
+    except ZeroDivisionError:
+        logging.error("Division by zero error!")
+        return None
+
+# -------------------------------
+# Step 4: Run main logic
+# -------------------------------
+if __name__ == "__main__":
+    logging.info("Program started")
+    divide_numbers(10, 2)
+    divide_numbers(5, 0)
+    logging.info("Program finished")
