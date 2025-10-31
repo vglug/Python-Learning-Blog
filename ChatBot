@@ -1,0 +1,168 @@
+import numpy as np
+import re
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from typing import Dict, List, Tuple
+
+QA_PAIRS: Dict[str, str] = {
+    "What is the fundamental purpose of the Python programming language?": 
+        "Python is primarily used for backend web development, data science, machine learning, and automation scripting due to its readability.",
+        
+    "Explain the concept of version control using Git.": 
+        "Git is a distributed version control system that tracks changes in source code during software development, facilitating collaboration among programmers.",
+        
+    "How is a computer's central processing unit measured?": 
+        "The performance of a CPU is typically measured in gigahertz (GHz), which indicates the number of cycles it executes per second, and also by the number of cores.",
+        
+    "What defines the difference between a mutable and immutable object?": 
+        "Mutable objects (like lists, dicts) can be changed after creation, while immutable objects (like tuples, strings, numbers) cannot be altered after they are initialized.",
+        
+    "Describe the role of an API in modern web services.": 
+        "An API (Application Programming Interface) acts as a middleman, allowing two separate software components to communicate and exchange data securely.",
+        
+    "What is the principle behind the TF-IDF vectorization method?": 
+        "TF-IDF stands for Term Frequency-Inverse Document Frequency. It weighs a word's importance by how often it appears in a document, balanced against how rarely it appears across all documents.",
+        
+    "Can you provide a definition for blockchain technology?": 
+        "Blockchain is a decentralized, distributed, and often public digital ledger that consists of records called blocks, used to securely record transactions across many computers.",
+        
+    "What is the importance of Big O notation in algorithms?": 
+        "Big O notation is used to classify algorithms by how their performance (runtime or space requirements) changes as the input size grows.",
+        
+    "List the components necessary to create a basic web page.":
+        "A basic web page requires HTML for structure, CSS for presentation (styling), and JavaScript for interactivity and dynamic content.",
+        
+    "Where is the highest mountain on Earth located?":
+        "The highest mountain above sea level, Mount Everest, is located in the Mahalangur Himal sub-range of the Himalayas, bordering Nepal and China.",
+        
+    "How do deep learning models differ from traditional machine learning?":
+        "Deep learning models use complex, multi-layered neural networks (deep networks) to automatically extract features from raw data, unlike traditional ML which often requires manual feature engineering.",
+        
+    "What is the primary function of an operating system?":
+        "An operating System (OS) manages computer hardware and software resources, provides common services for computer programs, and acts as an intermediary between the user and the hardware.",
+        
+    "Explain the concept of polymorphism in OOP.":
+        "Polymorphism, meaning 'many forms,' allows a single interface to be used for different data types. For example, a function or method can behave differently depending on the object it is acting upon.",
+        
+    "What is the major function of a database index?":
+        "A database index is a data structure that improves the speed of data retrieval operations on a database table at the cost of slower writes and requiring more storage space.",
+        
+    "How does encryption protect sensitive data?":
+        "Encryption converts readable data (plaintext) into an unreadable form (ciphertext) using an algorithm and a key, ensuring that only authorized parties with the correct key can decode it.",
+        
+    "What are the four pillars of Object-Oriented Programming (OOP)?":
+        "The four main pillars of OOP are Abstraction, Encapsulation, Inheritance, and Polymorphism.",
+        
+    "Can you briefly describe the concept of a software dependency?":
+        "A software dependency is a piece of code (like a library or package) required by another program to function correctly. Dependencies are managed using tools like pip or npm.",
+        
+    "What is the role of the try-except block in Python?":
+        "The try-except block is Python's mechanism for handling exceptions (runtime errors). It allows the program to continue execution gracefully instead of crashing.",
+        
+    "In physics, what is the meaning of 'gravity'?":
+        "Gravity is a fundamental force of nature by which all things with mass are brought toward one another, most notably the tendency of objects to fall toward a planet.",
+        
+    "What is the primary benefit of using Tailwind CSS for web design?":
+        "Tailwind CSS is a utility-first CSS framework that allows developers to rapidly build custom designs by composing low-level utility classes directly in their HTML markup."
+}
+
+# --- 2. CONFIGURATION And PREPARATION ---
+MAX_QUESTIONS: int = 20
+SIMILARITY_THRESHOLD: float = 0.50 
+
+vectorizer: TfidfVectorizer = TfidfVectorizer(stop_words='english')
+questions: List[str] = list(QA_PAIRS.keys())
+corpus_vectors: np.ndarray = None 
+
+def clean_text(text: str) -> str:
+    """Preprocesses text by converting to lowercase and removing punctuation."""
+    text = text.lower()
+    text = re.sub(r'[^\w\s]', '', text)
+    return text
+
+def initialize_retrieval_system():
+    """Initializes the TF-IDF vectorizer and calculates vectors for the knowledge base."""
+    global corpus_vectors
+    
+    cleaned_questions = [clean_text(q) for q in questions]
+    
+    try:
+        corpus_vectors = vectorizer.fit_transform(cleaned_questions)
+        print("--- Retrieval System Initialized ---")
+        print(f"Knowledge Base Size: {len(questions)} Q&A pairs loaded.")
+    except Exception as e:
+        print(f"Error during vectorizer initialization: {e}")
+        exit()
+
+
+def retrieve_answer(query: str) -> Tuple[str, float, str]:
+    """
+    Finds the most relevant answer based on cosine similarity to the cleaned query.
+    
+    Returns: (Answer, Similarity Score, Matched Canonical Question)
+    """
+    if not query.strip():
+        return "Please type a question or 'exit' to quit.", 0.0, ""
+        
+    
+    cleaned_query = clean_text(query)
+    query_vector = vectorizer.transform([cleaned_query])
+    
+    similarity_scores = cosine_similarity(query_vector, corpus_vectors)
+    
+    
+    best_match_index = np.argmax(similarity_scores)
+    best_score = similarity_scores[0, best_match_index]
+    
+    
+    if best_score >= SIMILARITY_THRESHOLD:
+        matched_question = questions[best_match_index]
+        return QA_PAIRS[matched_question], best_score, matched_question
+    else:
+        
+        fallback_msg = (
+            f"I cannot retrieve a confident answer for your query based on my knowledge base. "
+            f"My maximum confidence was {best_score:.2f} (below the {SIMILARITY_THRESHOLD:.2f} threshold). "
+            f"Try asking about programming, web concepts, or physics."
+        )
+        return fallback_msg, best_score, ""
+
+
+def main_chat_loop():
+    """Manages the main chat loop and enforces the question limit."""
+    initialize_retrieval_system()
+    
+    question_count = 0
+    print("\n" + "="*80)
+    print("Advanced Retrieval Chatbot (Semantic Matching) - GitHub Project")
+    print(f"Aim to ask questions that are variations of the stored knowledge. (Max {MAX_QUESTIONS} questions)")
+    print("Type 'exit' or 'quit' to end the session.")
+    print("="*80)
+
+    while question_count < MAX_QUESTIONS:
+        user_input = input(f"\n[{question_count + 1}/{MAX_QUESTIONS}] You: ")
+       
+        if user_input.lower() in ['exit', 'quit']:
+            print("\nChatbot: Goodbye! Thanks for testing the retrieval system.")
+            break
+       
+        answer, score, matched_q = retrieve_answer(user_input)
+        
+        
+        print("-" * 50)
+        print(f"My Chatbot Response (Confidence: {score:.2f}):")
+        print(f"MATCHED QUESTION: {matched_q if matched_q else 'No confident match found.'}")
+        print(f"ANSWER: {answer}")
+        print("-" * 50)
+        
+         
+        question_count += 1
+
+    if question_count == MAX_QUESTIONS:
+        print("\n" + "="*80)
+        print(f" SESSION ENDED: You have asked the maximum of {MAX_QUESTIONS} questions.")
+        print("Thank you for testing the semantic retrieval capabilities!")
+        print("="*80)
+
+if __name__ == "__main__":
+    main_chat_loop()
