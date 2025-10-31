@@ -1,0 +1,8 @@
+list1=[10,20,30,40,50,60,70]
+print(list1[1:5])
+print(list1[::3])
+print(list1[::3])
+list2=['mango','apple','banana','orange']
+print( list2[1:2])
+print (list2[::2])
+print (list2[:2])
