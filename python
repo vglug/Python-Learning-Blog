@@ -1,0 +1,16 @@
+def square(num):
+    result = num * num
+    return result
+
+
+def cube(num):
+    result = num **3
+    return result
+
+
+print("FUNCTIONS")
+num = int(input("Enter a nunmer:"))
+square = square(num) 
+cube = cube(num)
+print('Square:',square)
+print('Cube:',cube)
