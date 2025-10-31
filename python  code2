@@ -1,0 +1,28 @@
+def calculate_grade(marks):
+    if marks >= 90:
+        return "A+"
+    elif marks >= 80:
+        return "A"
+    elif marks >= 70:
+        return "B"
+    elif marks >= 60:
+        return "C"
+    elif marks >= 50:
+        return "D"
+    else:
+        return "F"
+
+students = {}
+n = int(input("Enter number of students:"))
+
+for i in range(n):
+    name = input("\n Enter student name:")
+    marks = float(input("Enter marks (out of 100):"))
+    grade = calculate_grade(marks)
+    students[name] = grade
+
+print("\n----- Student Grades -----")
+for name, grade in students.items():
+    print(f"{name}: {grade}")
+
+print("\nGrading complete!")
