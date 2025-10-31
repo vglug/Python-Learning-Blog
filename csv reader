@@ -1,0 +1,10 @@
+import csv
+data = [
+    {"name": "Keerthana", "age": "19"},
+    {"name": "Priya", "age": "20"}]
+with open("/tmp/students.csv", "w", newline="") as f:
+    w = csv.DictWriter(f, fieldnames=["name", "age"])
+    w.writeheader()
+    w.writerows(data)
+for r in csv.DictReader(open("/tmp/students.csv")):
+    print(r)
