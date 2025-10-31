@@ -1,0 +1,16 @@
+import pandas as pd
+import glob
+import os
+folder_path = "./csv_files"  
+csv_files = glob.glob(os.path.join(folder_path, "*.csv"))
+if not csv_files:
+    print("No CSV files found!")
+    exit()
+merged_df = pd.read_csv(csv_files[0])
+merge_key = "id"    
+for file in csv_files[1:]:
+    df = pd.read_csv(file)
+    merged_df = pd.merge(merged_df, df, on=merge_key, how="outer")
+merged_df.to_csv("merged_output.csv", index=False)
+print(" Merging completed successfully!")
+print(" Output saved as merged_output.csv")
