@@ -1,0 +1,74 @@
+import os
+import time
+import requests
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from tqdm import tqdm  # For progress bars
+
+# -------------------- Configuration --------------------
+URLS = [
+    "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+    "https://people.sc.fsu.edu/~jburkardt/data/csv/airtravel.csv",
+    "https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4"
+]
+
+DOWNLOAD_DIR = "downloads"
+MAX_THREADS = 3
+RETRY_LIMIT = 3  # Number of times to retry a failed download
+
+# -------------------- Helper Function --------------------
+def download_file(url):
+    """Download a single file from URL and save it locally with progress."""
+    local_filename = os.path.join(DOWNLOAD_DIR, url.split("/")[-1])
+
+    for attempt in range(1, RETRY_LIMIT + 1):
+        try:
+            response = requests.get(url, stream=True, timeout=15)
+            response.raise_for_status()
+
+            total_size = int(response.headers.get("content-length", 0))
+            chunk_size = 8192
+
+            # Progress bar setup
+            progress = tqdm(
+                total=total_size,
+                unit="B",
+                unit_scale=True,
+                desc=f"Downloading {local_filename}",
+                leave=False
+            )
+
+            with open(local_filename, "wb") as f:
+                for chunk in response.iter_content(chunk_size=chunk_size):
+                    if chunk:
+                        f.write(chunk)
+                        progress.update(len(chunk))
+            progress.close()
+
+            return f" Download complete: {local_filename}"
+
+        except Exception as e:
+            print(f" Attempt {attempt} failed for {url}: {e}")
+            if attempt == RETRY_LIMIT:
+                return f" Failed to download {url} after {RETRY_LIMIT} attempts."
+            time.sleep(2)  # Wait before retrying
+
+# -------------------- Main Program --------------------
+def main():
+    if not os.path.exists(DOWNLOAD_DIR):
+        os.makedirs(DOWNLOAD_DIR)
+
+    start_time = time.time()
+    print(f"\n Starting concurrent downloads using {MAX_THREADS} threads...\n")
+
+    with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
+        future_to_url = {executor.submit(download_file, url): url for url in URLS}
+
+        for future in as_completed(future_to_url):
+            print(future.result())
+
+    total_time = time.time() - start_time
+    print(f"\n All downloads completed in {total_time:.2f} seconds.\n")
+
+# -------------------- Run --------------------
+if __name__ == "__main__":
+    main()
