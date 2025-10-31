@@ -1,0 +1,10 @@
+DECLARE 
+ f NUMBER := 0;
+ n NUMBER := 5;
+BEGIN
+  FOR i IN 1..n LOOP
+f := f * i; 
+  END LOOP;
+  DBMS_OUTPUT.PUT_LINE(‘Factorial of’||n||’ is’||f);
+END;
+/
