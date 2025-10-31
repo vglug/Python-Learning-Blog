@@ -1,0 +1,101 @@
+SECRET_TOKEN = "MY_WEBHOOK_TOKEN"  # Change this value
+DATABASE = "events.db"
+LOGFILE = "webhook.log"
+import sqlite3
+import json
+from datetime import datetime
+
+from config import DATABASE
+
+
+def init_db():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp TEXT,
+            source_ip TEXT,
+            event_type TEXT,
+            payload TEXT
+        )
+    """)
+
+    conn.commit()
+    conn.close()
+
+
+def log_to_database(source_ip, event_type, payload):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO events (timestamp, source_ip, event_type, payload)
+        VALUES (?, ?, ?, ?)
+    """, (datetime.utcnow().isoformat(), source_ip, event_type, json.dumps(payload)))
+
+    conn.commit()
+    conn.close()
+from flask import Flask, request, jsonify
+import logging
+import threading
+from config import SECRET_TOKEN, LOGFILE
+from database import init_db, log_to_database
+
+app = Flask(__name__)
+logging.basicConfig(filename=LOGFILE, level=logging.INFO,
+                    format='%(asctime)s %(message)s')
+
+init_db()
+
+
+def process_event(source_ip, event_type, payload):
+    """Background worker to store logs asynchronously"""
+    logging.info(f"{source_ip} - {event_type}: {payload}")
+    log_to_database(source_ip, event_type, payload)
+
+
+@app.route("/webhook", methods=["POST"])
+def webhook_receiver():
+    auth = request.headers.get("X-Webhook-Token")
+
+    if auth != SECRET_TOKEN:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    payload = request.get_json()
+    event_type = request.headers.get("X-Event-Type", "generic")
+    source_ip = request.remote_addr
+    worker = threading.Thread(target=process_event, args=(source_ip, event_type, payload))
+    worker.start()
+
+    return jsonify({"status": "Event received"}), 200
+
+
+@app.route("/events", methods=["GET"])
+def list_events():
+    import sqlite3
+    conn = sqlite3.connect("events.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM events ORDER BY id DESC LIMIT 50")
+    rows = cursor.fetchall()
+    conn.close()
+
+    return jsonify({
+        "events": [
+            {
+                "id": row[0],
+                "timestamp": row[1],
+                "source_ip": row[2],
+                "event_type": row[3],
+                "payload": row[4]
+            } for row in rows
+        ]
+    }), 200
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=9000, debug=True)
+Flask
+
+    
