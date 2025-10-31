@@ -1,0 +1,66 @@
+import pandas as pd
+import numpy as np
+
+
+print("/// 1. Initial Data Setup (with Issues)///")
+
+
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie', 'Bob', 'Eve', 'David'],
+    'Age': [25, 30, np.nan, 30, 45, 22],
+    'Sales_Amount': ['1,500 USD', '800 USD', '1200 USD', '800 USD', '3,200 USD', '450 USD'],
+    'Category': [' Fruit ', 'Vegetable', 'Fruit', 'Vegetable', 'VEGETABLE', ' Dairy '],
+    'Join_Date': ['2023-01-15', '2022-11-01', '2023-05-20', '2022-11-01', '2023-03-10', '2023-07-25']
+}
+
+df = pd.DataFrame(data)
+print("\nOriginal DataFrame (Before Cleaning):")
+print(df)
+
+print("\nData Types (Before Cleaning):")
+print(df.dtypes)
+print("-" * 50)
+
+print("///  Handling Missing Values ('Age' Column)")
+
+median_age = df['Age'].median()
+df['Age'] = df['Age'].fillna(median_age)
+print(f"\nMissing values in 'Age' filled with Median Age: {median_age}")
+print("\nDataFrame after Missing Value Handling:")
+print(df)
+print("-" * 50)
+
+print("/// Removing Duplicate Rows")
+print(f"\nNumber of duplicate rows found: {df.duplicated().sum()}")
+df.drop_duplicates(inplace=True)
+print("\nDataFrame after Removing Duplicates:")
+print(df)
+print(f"\nNumber of rows after removing duplicates: {len(df)}")
+print("-" * 50)
+
+print("///Correcting Data Types ('Sales_Amount', 'Join_Date')")
+
+print("\nOriginal 'Sales_Amount' data type:", df['Sales_Amount'].dtype)
+
+df['Sales_Amount'] = df['Sales_Amount'].str.replace(',', '').str.replace(' USD', '')
+
+df['Sales_Amount'] = df['Sales_Amount'].astype(float)
+
+print("New 'Sales_Amount' data type:", df['Sales_Amount'].dtype)
+
+df['Join_Date'] = pd.to_datetime(df['Join_Date'])
+
+print("New 'Join_Date' data type:", df['Join_Date'].dtype)
+
+print("\nDataFrame after Data Type Corrections:")
+print(df)
+print("-" * 50)
+
+print("//// Standardizing Text ('Category' Column)")
+df['Category'] = df['Category'].str.strip()
+df['Category'] = df['Category'].str.lower()
+
+print("\nUnique values in 'Category' before standardization:")
+print(f"\nUnique values in 'Category' after standardization: {df['Category'].unique()}")
+
+print("
