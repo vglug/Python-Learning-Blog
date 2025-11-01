@@ -1,7 +1,0 @@
-# Adding two numbers
-add = lambda x, y: x + y
-print(f"Sum of 5 and 3: {add(5, 3)}")
-
-# Doubling a number
-double = lambda x: x * 2
-print(f"Double of 7: {double(7)}")
