@@ -1,0 +1,56 @@
+import torch
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, Trainer, TrainingArguments
+from datasets import Dataset
+
+# 1. Data Preparation (Example with dummy data)
+texts = ["This is a positive review.", "This is a negative review.", "Great service!", "Terrible experience."]
+labels = [1, 0, 1, 0] # 1 for positive, 0 for negative
+
+# Create a Hugging Face Dataset
+data_dict = {"text": texts, "label": labels}
+dataset = Dataset.from_dict(data_dict)
+
+# Split into train/test (for a small sample, you might have pre-defined splits)
+train_dataset = dataset.select(range(3))
+eval_dataset = dataset.select(range(3, 4))
+
+# 2. Model Selection and Loading
+model_name = "distilbert-base-uncased"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
+
+def tokenize_function(examples):
+    return tokenizer(examples["text"], padding="max_length", truncation=True)
+
+tokenized_train_dataset = train_dataset.map(tokenize_function, batched=True)
+tokenized_eval_dataset = eval_dataset.map(tokenize_function, batched=True)
+
+# 3. Fine-tuning
+training_args = TrainingArguments(
+    output_dir="./results",
+    num_train_epochs=5,
+    per_device_train_batch_size=2,
+    per_device_eval_batch_size=2,
+    warmup_steps=50,
+    weight_decay=0.01,
+    logging_dir="./logs",
+    logging_steps=10,
+    evaluation_strategy="epoch",
+    save_strategy="epoch",
+    load_best_model_at_end=True,
+    metric_for_best_model="accuracy",
+)
+
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=tokenized_train_dataset,
+    eval_dataset=tokenized_eval_dataset,
+    tokenizer=tokenizer,
+)
+
+trainer.train()
+
+# 4. Evaluation
+results = trainer.evaluate()
+print(results)
